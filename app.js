@@ -3,8 +3,8 @@ const BASE_URL =
 
 const dropdowns = document.querySelectorAll(".dropdown select");
 const btn = document.querySelector("form button");
-let fromCurr = document.querySelector(".from select");
-let toCurr = document.querySelector(".to select");
+const fromCurr = document.querySelector(".from select");
+const toCurr = document.querySelector(".to select");
 
 for (let select of dropdowns) {
   for (currCode in countryList) {
@@ -34,7 +34,7 @@ const updateFlag = (element) => {
   img.src = newSrc;
 };
 
-btn.addEventListener("click", (evt) => {
+btn.addEventListener("click", async (evt) => {
   evt.preventDefault();
   let amount = document.querySelector(".amount input");
   let amtVal = amount.value;
@@ -42,16 +42,10 @@ btn.addEventListener("click", (evt) => {
     amtVal = 1;
     amount.value = "1";
   }
-  fromCurr = fromCurr.value;
-  fromCurr = fromCurr.toLowerCase();
-  const URL = `${BASE_URL}/${fromCurr}.min.json`;
-  toCurr = toCurr.value;
-  toCurr = toCurr.toLowerCase();
-  console.log(toCurr);
-  let exchageRate = async () => {
-    let value = await fetch(URL);
-    let data = value.json();
-    console.log(data[fromCurr]);
-  };
-  exchageRate();
+  const URL = `${BASE_URL}/${fromCurr.value.toLowerCase()}.min.json`;
+  let response = await fetch(URL);
+  let data = await response.json();
+  let rate = data[fromCurr.value.toLowerCase()][toCurr.value.toLowerCase()];
+  let msg = document.querySelector(".msg");
+  msg.innerText = `1 ${fromCurr.value} = ${rate} ${toCurr.value}`;
 });
